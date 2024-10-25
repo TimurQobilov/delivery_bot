@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime
 
+from telebot.util import user_link
 
 connection = sqlite3.connect("fake_kfc.db")
 sql = connection.cursor()
@@ -107,12 +108,21 @@ def delete_exact_product(user_id, pr_id):
                 (user_id, pr_id))
     connection.commit()
 
-def delete_user_cart():
-    pass
+
+def delete_user_cart(user_id):
+    connection = sqlite3.connect("fake_kfc.db")
+    sql = connection.cursor()
+    sql.execute("DELETE FROM cart WHERE user_id=?;", (user_id,))
+    connection.commit()
 
 
-def get_user_cart():
-    pass
+def get_user_cart(user_id):
+    connection = sqlite3.connect("fake_kfc.db")
+    sql = connection.cursor()
+    cart_items = sql.execute("SELECT pr_name, pr_count, total_price FROM cart WHERE user_id=?;", (user_id,)).fetchall()
+    return cart_items  # Формат: [(Название, Количество, Цена), ...]
+
+
 
 
 
